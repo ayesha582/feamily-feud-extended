@@ -43,6 +43,7 @@ var app = {
                     <div id="wrong"       class='button wrongX'>
                         <img alt="not on board" src="/public/img/Wrong.svg"/>
                     </div>
+                    <div id='clearScore' class='button'>Clear Score</div>
                 </div>
 
                 </div>`),
@@ -67,6 +68,10 @@ var app = {
         app.makeQuestion(app.currentQ);
         app.board.find('.host').hide();
         $('body').append(app.board);
+    },
+    clearBoardScore: () => {
+        var boardScore = app.board.find("#boardScore");
+        boardScore.html(0);
     },
 
     // Action functions
@@ -248,8 +253,8 @@ var app = {
             case "flipCard":
                 app.flipCard(data.num);
                 break;
-            case "hostAssigned":
-                // app.board.find('#hostBTN').remove();
+            case "clearScore":
+                app.clearBoardScore()
                 break;
             case "wrong":
                 app.wrongAnswer()
@@ -273,6 +278,7 @@ var app = {
         app.board.find('#awardTeam1' ).on('click', { trigger: 'awardTeam1' }, app.talkSocket);
         app.board.find('#awardTeam2' ).on('click', { trigger: 'awardTeam2' }, app.talkSocket);
         app.board.find('#newQuestion').on('click', { trigger: 'newQuestion'}, app.talkSocket);
+        app.board.find('#clearScore').on('click', { trigger: 'clearScore'}, app.talkSocket);
         app.board.find('#wrong'      ).on('click', { trigger: 'wrong'      }, app.talkSocket);
 
         app.socket.on('listening', app.listenSocket)
