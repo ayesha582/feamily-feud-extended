@@ -8,8 +8,8 @@ server.listen(port);
 console.log('Listening on ' + port);
 
 app.use('/public', express.static('public'))
-app.get('/host', (req, res) => res.sendFile(__dirname + '/public/index.html'));
-app.get('/co-host', (req, res) => res.sendFile(__dirname + '/public/index.html'));
+app.get('/host*', (req, res) => res.sendFile(__dirname + '/public/index.html'));
+app.get('/co-host*', (req, res) => res.sendFile(__dirname + '/public/index.html'));
 app.get('/', (req, res) => res.sendFile(__dirname + '/public/index.html'));
 
 io.sockets.on('connection', (socket) => {

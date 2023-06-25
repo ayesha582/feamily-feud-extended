@@ -44,6 +44,7 @@ var app = {
                         <img alt="not on board" src="/public/img/Wrong.svg"/>
                     </div>
                     <div id='clearScore' class='button'>Clear Score</div>
+                    <div id='finals' class='button'>Finals!!</div>
                 </div>
 
                 </div>`),
@@ -72,6 +73,9 @@ var app = {
     clearBoardScore: () => {
         var boardScore = app.board.find("#boardScore");
         boardScore.html(0);
+    },
+    startFinals: () => {
+        $('body').addClass("wrapper")
     },
 
     // Action functions
@@ -256,6 +260,9 @@ var app = {
             case "clearScore":
                 app.clearBoardScore()
                 break;
+            case "finals":
+                app.startFinals()
+                break;
             case "wrong":
                 app.wrongAnswer()
                 break;
@@ -275,10 +282,15 @@ var app = {
             app.makeCoHost()
         }
 
+        if(window.location.pathname.includes('finals')){
+            $('body').addClass("wrapper")
+        }
+
         app.board.find('#awardTeam1' ).on('click', { trigger: 'awardTeam1' }, app.talkSocket);
         app.board.find('#awardTeam2' ).on('click', { trigger: 'awardTeam2' }, app.talkSocket);
         app.board.find('#newQuestion').on('click', { trigger: 'newQuestion'}, app.talkSocket);
         app.board.find('#clearScore').on('click', { trigger: 'clearScore'}, app.talkSocket);
+        app.board.find('#finals').on('click', { trigger: 'finals'}, app.talkSocket);
         app.board.find('#wrong'      ).on('click', { trigger: 'wrong'      }, app.talkSocket);
 
         app.socket.on('listening', app.listenSocket)
