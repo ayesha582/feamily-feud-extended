@@ -260,3 +260,41 @@ body {
 .showHost #wrong {
 width: 75px;
 }
+
+time {
+  display: block;
+  width: 310px;
+  text-align: center;
+  color: white;
+  font-size: 2rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+button {
+  padding: .5em 1.25em;
+  position: absolute;
+  bottom: 0px;
+  right: -15px;
+  color: #003c7b;
+  border: 1px solid white;
+  border-radius: .5em;
+  font-size: 1rem;
+}
+
+#toggle {right: -15px}
+#clear {
+  transition: all 300ms cubic-bezier(.4,.25,.3,1);
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  &[data-state='visible'] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.timer-container{
+  position: absolute;
+  right: 20px;
+}
