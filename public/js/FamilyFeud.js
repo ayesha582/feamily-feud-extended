@@ -1,5 +1,6 @@
 console.clear()
 
+
 var app = {
     version: 1,
     role: "player",
@@ -36,7 +37,6 @@ var app = {
 
                 <!--- Buttons --->
                 <div class='btnHolder hide' id="host">
-                    <div id='hostBTN'     class='button'>Be the host</div>
                     <div id='awardTeam1'  class='button' data-team='1'>Award Team 1</div>
                     <div id='newQuestion' class='button'>New Question</div>
                     <div id="wrong"       class='button wrongX'>
@@ -100,7 +100,7 @@ var app = {
                             <div class='card' data-id='${i}'>
                                 <div class='front'>
                                     <span class='DBG'>${(i + 1)}</span>
-                                    <span class='answer'>${qAnswr[i][0]}</span>
+                                    ${app.role === 'coHost' ? "<span class='answer'>"+qAnswr[i][0]+"</span>": ""}
                                 </div>
                                 <div class='back DBG'>
                                     <span>${qAnswr[i][0]}</span>
@@ -200,6 +200,9 @@ var app = {
             trigger: 'hostAssigned'
         });
     },
+    makeCoHost: () => {
+        app.role = "coHost";
+    },
     flipCard: (n) => {
         console.log("card");
         console.log(n);
@@ -228,7 +231,7 @@ var app = {
 
     // Socket Test
     talkSocket: (e) => {
-        if (app.role == "host") app.socket.emit("talking", e.data);
+        if (app.role == "host" || app.role == "coHost") app.socket.emit("talking", e.data);
     },
     listenSocket: (data) => {
         console.log(data);
@@ -246,7 +249,7 @@ var app = {
                 app.flipCard(data.num);
                 break;
             case "hostAssigned":
-                app.board.find('#hostBTN').remove();
+                // app.board.find('#hostBTN').remove();
                 break;
             case "wrong":
                 app.wrongAnswer()
@@ -259,7 +262,14 @@ var app = {
 
         $.getJSON(app.jsonFile, app.jsonLoaded);
 
-        app.board.find('#hostBTN'    ).on('click', app.makeHost);
+        if(window.location.pathname.includes('host')){
+            app.makeHost()
+        }
+
+        if(window.location.pathname.includes('co-host')){
+            app.makeCoHost()
+        }
+
         app.board.find('#awardTeam1' ).on('click', { trigger: 'awardTeam1' }, app.talkSocket);
         app.board.find('#awardTeam2' ).on('click', { trigger: 'awardTeam2' }, app.talkSocket);
         app.board.find('#newQuestion').on('click', { trigger: 'newQuestion'}, app.talkSocket);
