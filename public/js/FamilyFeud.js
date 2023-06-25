@@ -12,9 +12,6 @@ var app = {
 
                 <!--- Scores --->
                 <div class='score' id='boardScore'>0</div>
-                <div class='score' id='team1' >0</div>
-                <div class='score' id='team2' >0</div>
-
                 <!--- Main Board --->
                 <div id='middleBoard'>
 
@@ -37,12 +34,10 @@ var app = {
 
                 <!--- Buttons --->
                 <div class='btnHolder hide' id="host">
-                    <div id='awardTeam1'  class='button' data-team='1'>Award Team 1</div>
                     <div id='newQuestion' class='button'>New Question</div>
                     <div id="wrong"       class='button wrongX'>
                         <img alt="not on board" src="/public/img/Wrong.svg"/>
                     </div>
-                    <div id='awardTeam2'  class='button' data-team='2' >Award Team 2</div>
                 </div>
 
                 </div>`),
