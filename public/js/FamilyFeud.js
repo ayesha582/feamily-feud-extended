@@ -1,4 +1,6 @@
 console.clear()
+var WrongAudio = '../public/data/wrong.mp3'
+var PointAudio = '../public/data/point.mp3'
 
 
 var app = {
@@ -7,7 +9,7 @@ var app = {
     socket: io.connect(),
     jsonFile: "../public/data/FamilyFeud_Questions.json",
     currentQ: 0,
-    wrong:0,
+    wrong: 0,
     board: $(`<div class='gameBoard'>
 
                 <!--- Scores --->
@@ -46,9 +48,17 @@ var app = {
                     <div id='clearScore' class='button'>Clear Score</div>
                     <div id='finals' class='button'>Finals!!</div>
                 </div>
+                <audio id="point-audio">
+        <source src=${PointAudio} type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+      <audio id="wrong-audio">
+        <source src=${WrongAudio} type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
 
                 </div>`),
-    
+
     // Utility functions
     shuffle: (array) => {
         var currentIndex = array.length,
@@ -109,7 +119,7 @@ var app = {
                             <div class='card' data-id='${i}'>
                                 <div class='front'>
                                     <span class='DBG'>${(i + 1)}</span>
-                                    ${app.role === 'coHost' ? "<span class='answer'>"+qAnswr[i][0]+"</span>": ""}
+                                    ${app.role === 'coHost' ? "<span class='answer'>" + qAnswr[i][0] + "</span>" : ""}
                                 </div>
                                 <div class='back DBG'>
                                     <span>${qAnswr[i][0]}</span>
@@ -213,6 +223,8 @@ var app = {
         app.role = "coHost";
     },
     flipCard: (n) => {
+        const point = document.getElementById("point-audio");
+        point.play()
         console.log("card");
         console.log(n);
         var card = $('[data-id="' + n + '"]');
@@ -225,17 +237,19 @@ var app = {
         flipped = !flipped;
         $(card).data("flipped", flipped);
         app.getBoardScore()
+        
     },
-    wrongAnswer:()=>{
+    wrongAnswer: () => {
+        const sound = document.getElementById("wrong-audio");
+        sound.play()
         app.wrong++
-        console.log("wrong: "+ app.wrong )
+        console.log("wrong: " + app.wrong)
         var wrong = app.board.find(".wrongBoard")
-        $(wrong).find("img:nth-child("+app.wrong+")").show()
+        $(wrong).find("img:nth-child(" + app.wrong + ")").show()
         $(wrong).show()
-        setTimeout(() => { 
-            $(wrong).hide(); 
-        }, 1000); 
-
+        setTimeout(() => {
+            $(wrong).hide();
+        }, 1000);
     },
 
     // Socket Test
@@ -268,30 +282,30 @@ var app = {
                 break;
         }
     },
-    
+
     // Inital function
     init: () => {
 
         $.getJSON(app.jsonFile, app.jsonLoaded);
 
-        if(window.location.pathname.includes('host')){
+        if (window.location.pathname.includes('host')) {
             app.makeHost()
         }
 
-        if(window.location.pathname.includes('co-host')){
+        if (window.location.pathname.includes('co-host')) {
             app.makeCoHost()
         }
 
-        if(window.location.pathname.includes('finals')){
+        if (window.location.pathname.includes('finals')) {
             $('body').addClass("wrapper")
         }
 
-        app.board.find('#awardTeam1' ).on('click', { trigger: 'awardTeam1' }, app.talkSocket);
-        app.board.find('#awardTeam2' ).on('click', { trigger: 'awardTeam2' }, app.talkSocket);
-        app.board.find('#newQuestion').on('click', { trigger: 'newQuestion'}, app.talkSocket);
-        app.board.find('#clearScore').on('click', { trigger: 'clearScore'}, app.talkSocket);
-        app.board.find('#finals').on('click', { trigger: 'finals'}, app.talkSocket);
-        app.board.find('#wrong'      ).on('click', { trigger: 'wrong'      }, app.talkSocket);
+        app.board.find('#awardTeam1').on('click', { trigger: 'awardTeam1' }, app.talkSocket);
+        app.board.find('#awardTeam2').on('click', { trigger: 'awardTeam2' }, app.talkSocket);
+        app.board.find('#newQuestion').on('click', { trigger: 'newQuestion' }, app.talkSocket);
+        app.board.find('#clearScore').on('click', { trigger: 'clearScore' }, app.talkSocket);
+        app.board.find('#finals').on('click', { trigger: 'finals' }, app.talkSocket);
+        app.board.find('#wrong').on('click', { trigger: 'wrong' }, app.talkSocket);
 
         app.socket.on('listening', app.listenSocket)
 
@@ -303,107 +317,107 @@ var app = {
             var running = false;
             var paused = false;
             var timer;
-            
+
             // timer start time
             var then;
             // pause duration
             var delay;
             // pause start time
             var delayThen;
-        
-            
+
+
             // start timer
-            var start = function() {
+            var start = function () {
                 delay = 0;
                 running = true;
                 then = Date.now();
-                timer = setInterval(run,51);
+                timer = setInterval(run, 51);
                 toggle.innerHTML = 'stop';
             };
-            
-            
+
+
             // parse time in ms for output
-            var parseTime = function(elapsed) {
+            var parseTime = function (elapsed) {
                 // array of time multiples [hours, min, sec, decimal]
-                var d = [3600000,60000,1000,10];
+                var d = [3600000, 60000, 1000, 10];
                 var time = [];
                 var i = 0;
-        
+
                 while (i < d.length) {
-                    var t = Math.floor(elapsed/d[i]);
-        
+                    var t = Math.floor(elapsed / d[i]);
+
                     // remove parsed time for next iteration
-                    elapsed -= t*d[i];
-        
+                    elapsed -= t * d[i];
+
                     // add '0' prefix to m,s,d when needed
                     t = (i > 0 && t < 10) ? '0' + t : t;
                     time.push(t);
                     i++;
                 }
-                
+
                 return time;
             };
-            
-            
+
+
             // run
-            var run = function() {
+            var run = function () {
                 // get output array and print
-                var time = parseTime(Date.now()-then-delay);
+                var time = parseTime(Date.now() - then - delay);
                 output.innerHTML = time[0] + ':' + time[1] + ':' + time[2] + '.' + time[3];
             };
-            
-            
+
+
             // stop
-            var stop = function() {
+            var stop = function () {
                 paused = true;
                 delayThen = Date.now();
                 toggle.innerHTML = 'resume';
                 clear.dataset.state = 'visible';
                 clearInterval(timer);
-        
+
                 // call one last time to print exact time
                 run();
             };
-            
-            
+
+
             // resume
-            var resume = function() {
+            var resume = function () {
                 paused = false;
-                delay += Date.now()-delayThen;
-                timer = setInterval(run,51);
+                delay += Date.now() - delayThen;
+                timer = setInterval(run, 51);
                 toggle.innerHTML = 'stop';
                 clear.dataset.state = '';
             };
-            
-            
+
+
             // clear
-            var reset = function() {
+            var reset = function () {
                 running = false;
                 paused = false;
                 toggle.innerHTML = 'start';
                 output.innerHTML = '0:00:00.00';
                 clear.dataset.state = '';
             };
-            
-            
+
+
             // evaluate and route
-            var router = function() {
+            var router = function () {
                 if (!running) start();
                 else if (paused) resume();
                 else stop();
             };
-            
-            toggle.addEventListener('click',router);
-            clear.addEventListener('click',reset);
-            
-        
+
+            toggle.addEventListener('click', router);
+            clear.addEventListener('click', reset);
+
+
             //declare
         };
 
         setTimeout(() => {
             timer()
         }, 2000);
-        
+
     }
 };
 app.init();
